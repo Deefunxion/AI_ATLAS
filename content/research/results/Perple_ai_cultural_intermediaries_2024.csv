@@ -1,0 +1,14 @@
+﻿Node,Type,Audience_Metrics,Funding_Ties,AI_Coverage_Focus,Known_Sponsors
+TechCrunch,Tech Press,"21M monthly visitors, 2.3M Twitter followers","Verizon Media (Yahoo), venture capital coverage bias","Startup funding, product launches, enterprise adoption","Microsoft, Google, AWS, startup ecosystem"
+VentureBeat,Tech Press,"6M monthly visitors, 900K Twitter followers","Independent, conference revenue from AI companies","Enterprise AI, industry analysis, market trends","IBM, Salesforce, enterprise software vendors"
+The Information,Tech Press,"Premium subscription model, 100K+ subscribers","Subscription-based, minimal advertiser influence","Behind-the-scenes reporting, executive interviews","Subscriber-funded, minimal external sponsorship"
+Andrej Karpathy,Prompt Influencer,"894K Twitter followers, ex-Tesla/OpenAI","Independent, former OpenAI/Tesla connections","Technical education, AI safety, model development","Speaking fees, course sales, consulting"
+Jeremy Howard,Prompt Influencer,"200K+ Twitter followers, fast.ai founder","fast.ai, Kaggle background, education focus","Democratizing AI, practical applications, ethics","Course revenue, platform partnerships"
+Ethan Mollick,Academic Influencer,"350K+ Twitter/LinkedIn followers, Wharton professor","University salary, book deals, consulting","AI in business, productivity, education applications","Academic institution, book publishers"
+AI Breakfast Newsletter,Newsletter,"50K+ subscribers, industry professionals","Sponsorship model, AI company partnerships","Daily AI news, startup updates, policy changes","AI startups, cloud providers, enterprise tools"
+The Batch (Andrew Ng),Newsletter,"500K+ subscribers, DeepLearning.ai","Course platform revenue, corporate partnerships","AI education, research summaries, industry insights","DeepLearning.ai courses, corporate training"
+AI Twitter/X Community,Social Platform,"Millions of users, hashtag-driven conversations","Platform algorithm influence, promoted content","Real-time discussions, memes, technical debates","X advertising, promoted AI company content"
+GitHub Copilot/AI Repos,Developer Platform,"100M+ developers, AI repository growth","Microsoft ownership, enterprise GitHub revenue","Open source models, code generation, development tools","Microsoft, GitHub Enterprise, developer tools"
+Towards Data Science,Medium Publication,"1M+ followers, data science community","Medium Partner Program, industry contributor network","Technical tutorials, research explanations, career advice","Medium membership, course affiliates, tool vendors"
+Lex Fridman Podcast,Podcast/Influencer,"2M+ YouTube subscribers, long-form interviews","Spotify exclusivity, sponsorship deals","AI research leaders, philosophical discussions, safety","Athletic Greens, ExpressVPN, tech company CEOs"
+

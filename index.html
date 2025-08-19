@@ -1,0 +1,2463 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlas of Artificial Intelligence | Geopolitical Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --background-color: #121212;
+            --surface-color: #1e1e1e;
+            --primary-text-color: #e0e0e0;
+            --secondary-text-color: #b0b0b0;
+            --accent-color: #00BFFF; /* Deep Sky Blue */
+            --border-color: #333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--primary-text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 80px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: radial-gradient(ellipse at top, var(--surface-color), var(--background-color) 70%);
+        }
+
+        header h1 {
+            font-size: 3.8rem;
+            margin: 0 0 10px 0;
+            color: #ffffff;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+        }
+
+        header .subtitle {
+            font-size: 1.6rem;
+            color: var(--accent-color);
+            font-weight: 400;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        section {
+            padding: 80px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        section:last-of-type {
+            border-bottom: none;
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 50px;
+            font-weight: 700;
+        }
+
+        .section-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .section-content p {
+            font-size: 1.2rem;
+            color: var(--secondary-text-color);
+            margin-bottom: 1.5em;
+        }
+
+        .curriculum {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .semester {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .semester:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 191, 255, 0.1);
+            border-color: var(--accent-color);
+        }
+
+        .semester h3 {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .semester h4 {
+            font-size: 1.5rem;
+            color: var(--primary-text-color);
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .semester p, .semester ul {
+            font-size: 1.1rem;
+            color: var(--secondary-text-color);
+            text-align: left;
+        }
+        
+        .semester ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .semester li {
+            padding-left: 1.5em;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .semester li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--secondary-text-color);
+            font-size: 0.9rem;
+            background-color: var(--surface-color);
+        }
+        
+        .cta {
+            text-align: center;
+            padding: 80px 0;
+            background-color: var(--surface-color);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 18px 36px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 191, 255, 0.2);
+        }
+
+        .cta-button:hover {
+            background-color: #ffffff;
+            color: var(--background-color);
+            transform: scale(1.05);
+        }
+
+        /* Scrollable table styles */
+        .curriculum-table {
+            margin: 20px 0;
+        }
+
+        .table-container {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--surface-color);
+        }
+
+        .curriculum-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+        }
+
+        .curriculum-table th {
+            background-color: var(--background-color);
+            color: var(--accent-color);
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .curriculum-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--secondary-text-color);
+            vertical-align: top;
+        }
+
+        .curriculum-table tbody tr:hover {
+            background-color: rgba(0, 191, 255, 0.05);
+        }
+
+        .curriculum-table td:first-child {
+            width: 140px;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        /* Custom scrollbar styling */
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #2a2a2a;
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #777;
+        }
+
+        /* Firefox scrollbar styling */
+        .table-container {
+            scrollbar-width: thin;
+            scrollbar-color: #555 #2a2a2a;
+        }
+
+        /* Data Tables Section Styling */
+        .data-table-section {
+            margin: 40px 0;
+            padding: 30px;
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .data-table-section h3 {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .data-table-section p {
+            color: var(--secondary-text-color);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .table-controls {
+            margin-bottom: 15px;
+        }
+
+        .table-controls input {
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .table-controls input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(0, 191, 255, 0.2);
+        }
+
+        /* Clickable headers for sorting */
+        th {
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s ease;
+        }
+
+        th:hover {
+            background-color: rgba(0, 191, 255, 0.1);
+        }
+
+        /* Responsive table adjustments */
+        @media (max-width: 768px) {
+            .table-container {
+                font-size: 0.9rem;
+            }
+            
+            .table-controls input {
+                width: 100%;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>Atlas of Artificial Intelligence</h1>
+            <p class="subtitle">A Comprehensive Analysis of AI's Geopolitical Landscape: From Tripolar Fragmentation to Technological Sovereignty</p>
+            <div style="margin-top: 30px; text-align: center;">
+                <div style="display: inline-block; margin: 0 20px; color: var(--accent-color); font-weight: 600;">
+                    <span style="font-size: 1.2rem;">🌍 Western Paradigm</span><br>
+                    <span style="font-size: 0.9rem; color: var(--secondary-text-color);">Technocratic Capitalism</span>
+                </div>
+                <div style="display: inline-block; margin: 0 20px; color: var(--accent-color); font-weight: 600;">
+                    <span style="font-size: 1.2rem;">🏛️ Chinese Paradigm</span><br>
+                    <span style="font-size: 0.9rem; color: var(--secondary-text-color);">Techno-Authoritarianism</span>
+                </div>
+                <div style="display: inline-block; margin: 0 20px; color: var(--accent-color); font-weight: 600;">
+                    <span style="font-size: 1.2rem;">⚡ Shadow Paradigm</span><br>
+                    <span style="font-size: 0.9rem; color: var(--secondary-text-color);">Technological Commons</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="vision">
+            <div class="container">
+                <h2>Central Thesis: AI as Geopolitical Control</h2>
+                <div class="section-content">
+                    <p>
+                        Artificial Intelligence is not developing as a neutral technology, but as an <strong>instrument of geopolitical control</strong> that is redefining global power dynamics. Our research reveals the emergence of three incompatible AI paradigms leading to technological fragmentation that threatens to reshape the foundations of global governance.
+                    </p>
+                    <p>
+                        This Atlas documents the systematic transformation of AI from a tool for human augmentation into a mechanism for power concentration across three distinct civilizational trajectories: Western compliance-driven capitalism, Chinese state-coordinated authoritarianism, and shadow networks of technological resistance. Each paradigm embeds fundamentally different theories of intelligence, governance, and human flourishing into technical architectures.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px;">
+                        <div style="background: rgba(0, 191, 255, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent-color);">
+                            <h4 style="color: var(--accent-color); margin-bottom: 10px;">📊 Key Finding</h4>
+                            <p style="color: var(--secondary-text-color); font-size: 0.95rem;">$1B+ training costs exclude entire nations from foundational AI development</p>
+                        </div>
+                        <div style="background: rgba(0, 191, 255, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent-color);">
+                            <h4 style="color: var(--accent-color); margin-bottom: 10px;">🔍 Critical Insight</h4>
+                            <p style="color: var(--secondary-text-color); font-size: 0.95rem;">Data sovereignty determines AI capabilities more than computational resources</p>
+                        </div>
+                        <div style="background: rgba(0, 191, 255, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent-color);">
+                            <h4 style="color: var(--accent-color); margin-bottom: 10px;">⚠️ Central Challenge</h4>
+                            <p style="color: var(--secondary-text-color); font-size: 0.95rem;">Democratic institutions inadequate for governing AI development cycles</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- ============ VISUAL SNIPPET 1: MANUFACTURED CONSENT FLOW ======== -->
+        <!-- ================================================================= -->
+        <section id="visual-summary-map">
+            <div class="container">
+                <h2>The Manufactured Consent Flow: How Power Structures Are Hidden</h2>
+                <div class="section-content">
+                    <p>This diagram reveals how technological decisions create a "manufactured consent" narrative that obscures real power structures. The flow moves from public-facing interfaces down to infrastructure dependencies, deliberately omitting the governance, capital, academic, and military layers that actually control the system.</p>
+                </div>
+                <div style="font-family: 'Courier New', monospace; font-size: 14px; background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; text-align: left; line-height: 1.5;">
+                    <pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">
+<span style="color: var(--accent-color);">[LAYER 10]</span> SOCIAL SURFACES & INTERFACES (ChatGPT, HuggingFace)
+     <span style="color: var(--secondary-text-color);">└─ Shapes public perception and manufactures consent.</span>
+           ▼
+<span style="color: var(--accent-color);">[LAYER 4]</span>  APPLICATION LAYER (Morgan Stanley, Oscar Health)
+     <span style="color: var(--secondary-text-color);">└─ "Cyborg" systems reveal safety failures in production.</span>
+           ▼
+<span style="color: var(--accent-color);">[LAYER 3]</span>  MIDDLEWARE & ORCHESTRATION (LangChain, OpenRouter)
+     <span style="color: var(--secondary-text-color);">└─ Creates the illusion of control ("Governance Theater").</span>
+           ▼
+<span style="color: var(--accent-color);">[LAYER 1]</span>  FOUNDATION MODELS (OpenAI, Baidu, Mistral)
+     <span style="color: var(--secondary-text-color);">└─ Three incompatible paradigms: West, China, Open-Source.</span>
+           ▼
+<span style="color: var(--accent-color);">[LAYER 2]</span>  INFRASTRUCTURE LAYER (NVIDIA, AMD, Cloud)
+     <span style="color: var(--secondary-text-color);">└─ "Computational Feudalism" creates permanent dependencies.</span>
+           ▼
+<span style="color: var(--accent-color);">[LAYER 5]</span>  DATA GOVERNANCE (Palantir, Vector DBs)
+     <span style="color: var(--secondary-text-color);">└─ Data sovereignty becomes the primary determinant of power.</span>
+
+<span style="color: #ffffff; font-weight: bold;">--- POWER & CONTROL FLOWS ---</span>
+
+<span style="color: var(--accent-color);">[GOVERNANCE]</span>◄──►<span style="color: var(--accent-color);">[CAPITAL]</span>◄──►<span style="color: var(--accent-color);">[MILITARY]</span>
+<span style="color: var(--secondary-text-color);"> (EU AI Act)   (1B+ Costs)   (Palantir)</span>
+      │             │             │
+      └──────┬──────┴─────────────┘
+             ▼
+<span style="color: var(--accent-color);">[LEGITIMATION LAYER]</span> (Stanford HAI, Tech Press)
+     <span style="color: var(--secondary-text-color);">└─ Academic & civil society capture neutralizes dissent.</span>
+
+<span style="color: #ffffff; font-weight: bold;">--- RESISTANCE FLOW ---</span>
+
+<span style="color: var(--accent-color);">[SHADOW ECOSYSTEM]</span> (Jailbreaks, BitTorrent Models)
+     <span style="color: var(--secondary-text-color);">└─ Technological commons emerge as an alternative trajectory.</span>
+            </pre>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 25px; background: rgba(255, 77, 54, 0.1); border-left: 4px solid #FF4D36; border-radius: 8px;">
+                    <h4 style="color: #FF4D36; margin-bottom: 15px; font-size: 1.2rem;">⚠️ Critical Analysis: What This Flow Conceals</h4>
+                    <p style="color: var(--secondary-text-color); margin-bottom: 15px; font-size: 1rem;">
+                        This technocratic narrative <strong>deliberately omits</strong> the layers that actually control AI development:
+                    </p>
+                    <ul style="color: var(--secondary-text-color); font-size: 1rem; margin-left: 20px;">
+                        <li><strong>Layer 6 (Public Institutions):</strong> Democratic legitimation and regulatory capture</li>
+                        <li><strong>Layer 7 (Investment & Capital):</strong> $1B+ funding requirements excluding entire nations</li>
+                        <li><strong>Layer 8 (Academic & Civil Society):</strong> Epistemic enclosure and legitimation mechanisms</li>
+                        <li><strong>Layer 9 (Military & Surveillance):</strong> Algorithmic warfare and population control systems</li>
+                    </ul>
+                    <p style="color: var(--primary-text-color); margin-top: 15px; font-size: 1rem; font-weight: 600;">
+                        <strong>The Result:</strong> AI appears as natural technological evolution rather than deliberate political choice, obscuring how capital, state power, and military interests shape every technical decision from the top down.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- ============ VISUAL SNIPPET 2: KEY INSIGHTS DASHBOARD =========== -->
+        <!-- ================================================================= -->
+        <section id="visual-summary-dashboard">
+            <div class="container">
+                <h2>Ecosystem Health Dashboard</h2>
+                <div class="section-content">
+                    <p>A real-time summary of the Atlas's key findings, visualizing the concentration of power and the state of democratic control within the global AI ecosystem.</p>
+                </div>
+                <div style="font-family: 'Courier New', monospace; font-size: 14px; background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; text-align: left; line-height: 1.8;">
+                    <div style="margin-bottom: 15px;">
+                        <span style="color: #ffffff;">POWER CENTRALIZATION INDEX:</span>
+                        <span style="color: #FF4136; font-weight: bold;">[CRITICAL]</span>
+                        <div style="background-color: #333; border-radius: 3px; padding: 2px; margin-top: 5px;">
+                            <div style="width: 85%; background-color: var(--accent-color); height: 10px; border-radius: 3px;"></div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <span style="color: #ffffff;">DEMOCRATIC PARTICIPATION:</span>
+                        <span style="color: #FF851B; font-weight: bold;">[LOW]</span>
+                        <div style="background-color: #333; border-radius: 3px; padding: 2px; margin-top: 5px;">
+                            <div style="width: 20%; background-color: var(--accent-color); height: 10px; border-radius: 3px;"></div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <span style="color: #ffffff;">GOVERNANCE EFFECTIVENESS:</span>
+                        <span style="color: #FF4136; font-weight: bold;">[FAILURE]</span>
+                        <div style="background-color: #333; border-radius: 3px; padding: 2px; margin-top: 5px;">
+                            <div style="width: 15%; background-color: var(--accent-color); height: 10px; border-radius: 3px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <span style="color: #ffffff;">RESISTANCE CAPACITY (SHADOW ECOSYSTEM):</span>
+                        <span style="color: #2ECC40; font-weight: bold;">[MODERATE]</span>
+                        <div style="background-color: #333; border-radius: 3px; padding: 2px; margin-top: 5px;">
+                            <div style="width: 60%; background-color: var(--accent-color); height: 10px; border-radius: 3px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- ======== VISUAL SNIPPET 3: THREE PARADIGMS VISUAL JOURNEY ======= -->
+        <!-- ================================================================= -->
+        <section id="visual-summary-paradigms">
+            <div class="container">
+                <h2>The Three Incompatible AI Worlds</h2>
+                <div class="section-content">
+                    <p>A visual comparison of the three divergent geopolitical paradigms shaping AI. Each path embeds a different theory of governance, control, and power, leading to an irreversible fragmentation of the global technological landscape.</p>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; font-family: 'Courier New', monospace; font-size: 14px; text-align: left;">
+                    
+                    <!-- Western Paradigm -->
+                    <div style="background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+                        <h4 style="color: var(--accent-color); margin-top: 0;">WESTERN PARADIGM</h4>
+                        <p style="color: var(--secondary-text-color); margin: 0;">
+                            Corporate Control  
+
+                            &nbsp;&nbsp;▼  
+
+                            Compliance-Driven Dev  
+
+                            &nbsp;&nbsp;▼  
+
+                            Legal Risk Mitigation  
+
+                            &nbsp;&nbsp;▼  
+
+                            Governance Theater  
+
+                            &nbsp;&nbsp;▼  
+
+                            <strong>Institutional Capture</strong>
+                        </p>
+                    </div>
+
+                    <!-- Chinese Paradigm -->
+                    <div style="background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+                        <h4 style="color: var(--accent-color); margin-top: 0;">CHINESE PARADIGM</h4>
+                        <p style="color: var(--secondary-text-color); margin: 0;">
+                            State Coordination  
+
+                            &nbsp;&nbsp;▼  
+
+                            State-Aligned AI  
+
+                            &nbsp;&nbsp;▼  
+
+                            Value Embedding  
+
+                            &nbsp;&nbsp;▼  
+
+                            Data Sovereignty  
+
+                            &nbsp;&nbsp;▼  
+
+                            <strong>Techno-Authoritarianism</strong>
+                        </p>
+                    </div>
+
+                    <!-- Shadow Paradigm -->
+                    <div style="background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+                        <h4 style="color: var(--accent-color); margin-top: 0;">SHADOW PARADIGM</h4>
+                        <p style="color: var(--secondary-text-color); margin: 0;">
+                            Distributed Networks  
+
+                            &nbsp;&nbsp;▼  
+
+                            Permissionless Innovation  
+
+                            &nbsp;&nbsp;▼  
+
+                            Circumvention Tech  
+
+                            &nbsp;&nbsp;▼  
+
+                            Resistance Economies  
+
+                            &nbsp;&nbsp;▼  
+
+                            <strong>Technological Commons</strong>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="why">
+            <div class="container">
+                <h2>Research Methodology & Scope</h2>
+                <div class="section-content">
+                    <p>
+                        This Atlas emerged from a comprehensive analysis of AI ecosystem dynamics across 2024-2025, examining the systematic patterns of power concentration, technological dependency, and governance failure that characterize contemporary AI development. Our methodology combines institutional analysis, technical architecture review, and geopolitical impact assessment.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 30px;">
+                        <div>
+                            <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.3rem;">🔬 Research Dimensions</h4>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="margin-bottom: 10px; color: var(--secondary-text-color);">• Technical architecture analysis across 11 ecosystem layers</li>
+                                <li style="margin-bottom: 10px; color: var(--secondary-text-color);">• Capital flow tracking through sovereign and corporate investments</li>
+                                <li style="margin-bottom: 10px; color: var(--secondary-text-color);">• Governance mechanism evaluation across paradigms</li>
+                                <li style="margin-bottom: 10px; color: var(--secondary-text-color);">• Shadow ecosystem mapping and resistance economies</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.3rem;">📊 Data Sources</h4>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="margin-bottom: 10px; color: var(--secondary-text-color);">• Contract databases: $50B+ in AI-related agreements</li>
+                                <li style="margin-bottom: 10px; color: var(--secondary-text-color);">• Technical documentation from major AI platforms</li>
+                                <li style="margin-bottom: 10px; color: var(--secondary-text-color);">• Regulatory filing analysis across jurisdictions</li>
+                                <li style="margin-bottom: 10px; color: var(--secondary-text-color);">• Shadow market intelligence and circumvention analysis</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="curriculum">
+            <div class="container">
+                <h2>The AI Atlas: 11 Layers of Analysis</h2>
+                <div class="section-content" style="margin-bottom: 40px;">
+                    <p>Each layer reveals critical mechanisms of power, control, and resistance within the global AI ecosystem. Click through the tables below to explore the detailed analysis of how AI is reshaping geopolitical reality.</p>
+                </div>
+                <div class="curriculum">
+                    
+            <div class="semester">
+                <h3>Chapter 1: Core LLM Developers</h3>
+                <h4>Tripolar Fragmentation in AI Development</h4>
+                <p>
+                    The foundational layer reveals three incompatible AI paradigms: Western compliance-driven models, Chinese state-coordinated development, and shadow open-source networks. Each embeds fundamentally different theories of governance and human-AI interaction that resist convergence.
+                </p>
+                
+                <h4>Core Findings: Data Sovereignty as Power Determinant</h4>
+                <div class="curriculum-table">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Paradigm</th>
+                                    <th>Key Characteristics & Strategic Implications</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Western Model</strong></td>
+                                    <td><strong>Compliance-Driven Development</strong><br><br>
+                                    • OpenAI/Anthropic: Constitutional AI frameworks for legal risk mitigation<br><br>
+                                    • Licensed/synthetic data strategies to avoid litigation<br><br>
+                                    • Emphasis on auditable safety mechanisms and regulatory compliance<br><br>
+                                    • Progressive closure despite founding open-source principles</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Chinese Model</strong></td>
+                                    <td><strong>State-Coordinated Alignment</strong><br><br>
+                                    • Baidu/Alibaba: Comprehensive domestic internet crawling infrastructure<br><br>
+                                    • National data governance frameworks enabling cultural-linguistic specificity<br><br>
+                                    • State-mandated value alignment and censorship regime embedding<br><br>
+                                    • Domain-specific advancement through coordinated research priorities</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Open-Source Model</strong></td>
+                                    <td><strong>Hybrid Resistance Networks</strong><br><br>
+                                    • EleutherAI/Mistral: Auditable model weights and transparent methodologies<br><br>
+                                    • Operating outside traditional commercial constraints<br><br>
+                                    • Accelerating both beneficial innovation and shadow ecosystem proliferation<br><br>
+                                    • Serving as conduit for unregulated AI distribution networks</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Critical Insight</strong></td>
+                                    <td><strong>Irreconcilable Definitions of "Beneficial AI"</strong><br><br>
+                                    • Constitutional AI assumes adversarial democratic pluralism<br><br>
+                                    • State-aligned AI assumes benevolent hierarchical coordination<br><br>
+                                    • Open-source AI assumes beneficial emergence from unrestricted access<br><br>
+                                    • Path dependencies foreclosing future convergence toward universal standards</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p><strong>Chapter Conclusion:</strong> We are witnessing the emergence of distinct technological civilizations in AI development, each encoding incompatible theories of intelligence, governance, and human flourishing that resist synthesis through technical means alone.</p>
+
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 191, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 191, 255, 0.2);">
+                    <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.1rem;">📥 Download Chapter Resources</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/synthesis/chapter1_core_llm_developers.md', 'Chapter1_Core_LLM_Developers_Analysis.md')" style="display: inline-block; background: var(--accent-color); color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: background 0.3s ease;">
+                            📄 Full Chapter Analysis (MD)
+                        </a>
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/results/deepseek_chapter1&11.md', 'Chapter1_Research_Source.md')" style="display: inline-block; background: var(--surface-color); color: var(--accent-color); border: 2px solid var(--accent-color); padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: all 0.3s ease;">
+                            📊 Research Source (MD)
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="semester">
+                <h3>Chapter 2: AI Infrastructure Layer</h3>
+                <h4>Computational Feudalism and Technological Lock-in</h4>
+                <p>
+                    The infrastructure layer materializes geopolitical competition through silicon architecture, where NVIDIA's proprietary ecosystem creates technical dependencies that function as de facto industrial policy, while specialized architectures challenge the general-purpose GPU paradigm.
+                </p>
+                
+                <h4>Strategic Infrastructure Control Mechanisms</h4>
+                <div class="curriculum-table">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Infrastructure Layer</th>
+                                    <th>Control Mechanisms & Strategic Implications</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>NVIDIA Ecosystem</strong></td>
+                                    <td><strong>Proprietary Lock-in Strategy</strong><br><br>
+                                    • NVLink interconnects creating technical dependencies beyond pure performance<br><br>
+                                    • CUDA software stacks functioning as de facto industrial policy<br><br>
+                                    • $10B+ contracts establishing permanent customer dependencies<br><br>
+                                    • Supply chain control through TSMC CoWoS packaging and HBM memory constraints</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>AMD Alternative</strong></td>
+                                    <td><strong>Open Standards Coalition</strong><br><br>
+                                    • ROCm software stack and Ultra Ethernet Consortium partnerships<br><br>
+                                    • "Democratic alternative" positioning against vendor lock-in<br><br>
+                                    • Trade-off between openness and cutting-edge optimization<br><br>
+                                    • Standardization compromising performance for broad compatibility</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Specialized Architecture</strong></td>
+                                    <td><strong>Domain-Specific Optimization</strong><br><br>
+                                    • Groq: Deterministic inference processors for high-speed deployment<br><br>
+                                    • Cerebras: Wafer-scale engines for massive-scale training applications<br><br>
+                                    • Graphcore: Graph-oriented IPUs challenging general-purpose paradigm<br><br>
+                                    • Saudi $1.5B Groq investment demonstrates sovereign infrastructure strategies</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Cloud Hyperscaler</strong></td>
+                                    <td><strong>Platform Control Strategies</strong><br><br>
+                                    • AWS: Platform neutrality as "merchant of AI" positioning<br><br>
+                                    • Microsoft: Deep vertical integration with proprietary silicon development<br><br>
+                                    • Google: TPU architecture increasingly decoupled from cloud for wider adoption<br><br>
+                                    • Each embedding different theories of AI infrastructure governance and access</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p><strong>Chapter Conclusion:</strong> Infrastructure choices are becoming irreversible through path dependency effects, creating feedback loops that lock in particular technological trajectories with implications extending beyond efficiency to AI sovereignty and innovation accessibility.</p>
+
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 191, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 191, 255, 0.2);">
+                    <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.1rem;">📥 Download Chapter Resources</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/synthesis/chapter2_ai_infrastructure_layer.md', 'Chapter2_AI_Infrastructure_Layer_Analysis.md')" style="display: inline-block; background: var(--accent-color); color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: background 0.3s ease;">
+                            📄 Full Chapter Analysis (MD)
+                        </a>
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/results/GEMINI_Chapter_2&7_AI Compute, Capital, Policy_.md', 'Chapter2_Research_Source.md')" style="display: inline-block; background: var(--surface-color); color: var(--accent-color); border: 2px solid var(--accent-color); padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: all 0.3s ease;">
+                            📊 Research Source (MD)
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="semester">
+                <h3>Chapter 3: Middleware & Platform Orchestration</h3>
+                <h4>AI Governance Theater and Safety Abstraction Failures</h4>
+                <p>
+                    Middleware platforms create an illusion of control over non-deterministic AI systems while failing to provide meaningful safety improvements. The complexity overhead exceeds benefits as real reliability emerges despite, not because of, orchestration layers.
+                </p>
+                
+                <h4>Platform Control Illusions and Technical Failures</h4>
+                <div class="curriculum-table">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Platform Type</th>
+                                    <th>Governance Theater Mechanisms</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>LangChain Ecosystem</strong></td>
+                                    <td><strong>Abstraction Layer Complexity</strong><br><br>
+                                    • Middleware cannot constrain non-deterministic AI behavior patterns<br><br>
+                                    • Evaluation frameworks measure lagging indicators, not predictive risks<br><br>
+                                    • Complexity overhead exceeds safety benefits in production deployments<br><br>
+                                    • Developer dependencies increase without corresponding reliability improvements</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>OpenRouter/API Gateways</strong></td>
+                                    <td><strong>Control Interface Illusions</strong><br><br>
+                                    • Rate limiting and content filtering easily circumvented through prompt injection<br><br>
+                                    • Multi-model routing decisions based on cost optimization, not safety metrics<br><br>
+                                    • Centralized chokepoints creating single points of failure<br><br>
+                                    • Platform dependencies enabling surveillance without user awareness</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Salesforce Einstein</strong></td>
+                                    <td><strong>Enterprise Safety Theater</strong><br><br>
+                                    • Trust Layer provides compliance documentation without behavioral constraints<br><br>
+                                    • Enterprise deployments require extensive human oversight bypassing automated safety<br><br>
+                                    • Vendor lock-in through proprietary workflow integration and data dependencies<br><br>
+                                    • Safety metrics optimized for legal liability, not operational reliability</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Critical Analysis</strong></td>
+                                    <td><strong>Systematic Safety Abstraction Failure</strong><br><br>
+                                    • Middleware designed for deterministic systems applied to non-deterministic AI<br><br>
+                                    • Real reliability achieved through domain-specific human oversight<br><br>
+                                    • Increasing complexity without corresponding safety improvements<br><br>
+                                    • Platform consolidation enabling surveillance and control without democratic oversight</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p><strong>Chapter Conclusion:</strong> Middleware platforms fail to regulate AI systems effectively while creating new dependencies and control mechanisms that serve platform interests rather than user safety or democratic governance.</p>
+
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 191, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 191, 255, 0.2);">
+                    <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.1rem;">📥 Download Chapter Resources</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/synthesis/chapter3_middleware_platform_orchestration_layer.md', 'Chapter3_Middleware_Platform_Analysis.md')" style="display: inline-block; background: var(--accent-color); color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: background 0.3s ease;">
+                            📄 Full Chapter Analysis (MD)
+                        </a>
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/results/GPT_Chapter 3&4_ Middleware _ Platform Orchestration – Capability Grid.md', 'Chapter3_Research_Source.md')" style="display: inline-block; background: var(--surface-color); color: var(--accent-color); border: 2px solid var(--accent-color); padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: all 0.3s ease;">
+                            📊 Research Source (MD)
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="semester">
+                <h3>Chapter 4: Application Layer</h3>
+                <h4>"Cyborg" Systems and AI Safety Overhead</h4>
+                <p>
+                    Successful AI applications require extensive human oversight that bypasses technical safety measures, revealing that "AI safety overhead" often exceeds benefits. Only "cyborg" human-AI systems achieve reliable performance in production environments.
+                </p>
+                
+                <h4>Real-World AI Implementation Patterns</h4>
+                <div class="curriculum-table">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Implementation</th>
+                                    <th>Human Oversight Requirements & Performance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Morgan Stanley</strong></td>
+                                    <td><strong>98% Adoption Through Custom Frameworks</strong><br><br>
+                                    • Custom evaluation frameworks, not platform safeguards enable deployment<br><br>
+                                    • Human financial advisors required for all client-facing AI recommendations<br><br>
+                                    • Domain-specific constraints derived from regulatory requirements<br><br>
+                                    • Success despite, not because of, general AI safety mechanisms</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Oscar Health</strong></td>
+                                    <td><strong>93-96% Accuracy with Manual Verification</strong><br><br>
+                                    • Manual verification by human auditors for all AI medical recommendations<br><br>
+                                    • Automated filtering systems regularly circumvented through clinical judgment<br><br>
+                                    • Performance improvements through human-AI collaboration patterns<br><br>
+                                    • Liability management through human accountability, not technical safeguards</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Enterprise Deployment</strong></td>
+                                    <td><strong>Systematic Human-in-Loop Requirements</strong><br><br>
+                                    • Legal compliance through human oversight, not automated safety systems<br><br>
+                                    • Custom workflows designed around domain expertise, not general AI capabilities<br><br>
+                                    • Performance optimization through human feedback loops<br><br>
+                                    • Risk mitigation through institutional accountability structures</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Pattern Analysis</strong></td>
+                                    <td><strong>"Cyborg" Systems as Only Viable Solution</strong><br><br>
+                                    • Human oversight required for all high-stakes AI applications<br><br>
+                                    • Technical safety measures insufficient for real-world deployment<br><br>
+                                    • Success patterns emerge from human-AI collaboration, not AI autonomy<br><br>
+                                    • Institutional frameworks more effective than technical safeguards</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p><strong>Chapter Conclusion:</strong> AI applications succeed through extensive human oversight and domain-specific institutional frameworks, not through technical safety measures, revealing the limitations of automated AI governance approaches.</p>
+
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 191, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 191, 255, 0.2);">
+                    <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.1rem;">📥 Download Chapter Resources</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/synthesis/chapter4_application_layer.md', 'Chapter4_Application_Layer_Analysis.md')" style="display: inline-block; background: var(--accent-color); color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: background 0.3s ease;">
+                            📄 Full Chapter Analysis (MD)
+                        </a>
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/results/GPT_Chapter 3&4_ Middleware _ Platform Orchestration – Capability Grid.md', 'Chapter4_Research_Source.md')" style="display: inline-block; background: var(--surface-color); color: var(--accent-color); border: 2px solid var(--accent-color); padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: all 0.3s ease;">
+                            📊 Research Source (MD)
+                        </a>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="semester">
+                <h3>Chapter 5: Data Governance & Hosting Layer</h3>
+                <h4>Data as Weapons and Sovereignty Dependencies</h4>
+                <p>
+                    Data sovereignty has emerged as the primary determinant of AI capabilities, creating new forms of technological dependency. Vector databases control access to knowledge while traditional data brokers pivot to AI training without transparency, weaponizing information access.
+                </p>
+                
+                <h4>Data Control and Weaponization Mechanisms</h4>
+                <div class="curriculum-table">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Data Infrastructure</th>
+                                    <th>Control Mechanisms & Strategic Implications</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Palantir Government</strong></td>
+                                    <td><strong>$2.9B Revenue with 55% Government Contracts</strong><br><br>
+                                    • Data integration platforms enabling comprehensive surveillance capabilities<br><br>
+                                    • Government data dependencies creating institutional capture mechanisms<br><br>
+                                    • Proprietary analytics creating vendor lock-in for critical infrastructure<br><br>
+                                    • Dual-use technologies blurring surveillance-analysis boundaries</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Vector Databases</strong></td>
+                                    <td><strong>Knowledge Access Control Systems</strong><br><br>
+                                    • Semantic search capabilities determining AI knowledge retrieval patterns<br><br>
+                                    • Embedding models creating new forms of information gatekeeping<br><br>
+                                    • Platform consolidation enabling knowledge access manipulation<br><br>
+                                    • Technical complexity barriers excluding democratic oversight</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Traditional Data Brokers</strong></td>
+                                    <td><strong>Pivot to AI Training Without Transparency</strong><br><br>
+                                    • Acxiom, LexisNexis leveraging existing data relationships for AI development<br><br>
+                                    • Consent mechanisms inadequate for AI training data collection<br><br>
+                                    • Cross-border data flows enabling regulatory arbitrage<br><br>
+                                    • Privacy frameworks systematically circumvented through technical complexity</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Sovereignty Framework</strong></td>
+                                    <td><strong>Data as Determinant of AI Capabilities</strong><br><br>
+                                    • Western companies constrained by litigation risks, relying on licensed/synthetic data<br><br>
+                                    • Chinese companies accessing comprehensive domestic crawling infrastructure<br><br>
+                                    • Data sovereignty becoming primary determinant of model capabilities<br><br>
+                                    • Information access patterns embedding geopolitical dependencies</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p><strong>Chapter Conclusion:</strong> Data governance has become a mechanism for technological sovereignty, where control over information access determines AI capabilities more than computational resources alone.</p>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 191, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 191, 255, 0.2);">
+                    <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.1rem;">📥 Download Chapter Resources</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/synthesis/chapter5_data_acquisition_processing.md', 'Chapter5_Data_Governance_Analysis.md')" style="display: inline-block; background: var(--accent-color); color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: background 0.3s ease;">
+                            📄 Full Chapter Analysis (MD)
+                        </a>
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/results/perplexity_chapter5&10.md', 'Chapter5_Research_Source.md')" style="display: inline-block; background: var(--surface-color); color: var(--accent-color); border: 2px solid var(--accent-color); padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: all 0.3s ease;">
+                            📊 Research Source (MD)
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="semester">
+                <h3>Chapter 6: Public Institutions & Supranational Bodies</h3>
+                <h4>Crisis of Democratic Legitimacy in AI Governance</h4>
+                <p>
+                    Democratic institutions operate too slowly for AI development cycles while creating "lowest bar possible" regulatory frameworks. The systematic exclusion of Global South voices and innovation-first deregulation reveal the inadequacy of traditional governance for AI oversight.
+                </p>
+                
+                <h4>Democratic Governance Failures and Institutional Capture</h4>
+                <div class="curriculum-table">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Institution</th>
+                                    <th>Governance Failures & Democratic Deficits</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>EU AI Act</strong></td>
+                                    <td><strong>"Lowest Bar Possible" for Human Rights</strong><br><br>
+                                    • Risk-based approach creating loopholes for high-impact AI systems<br><br>
+                                    • Compliance frameworks designed for corporate convenience, not democratic control<br><br>
+                                    • Enforcement mechanisms inadequate for rapid AI development cycles<br><br>
+                                    • Technical standards developed by industry, not democratic institutions</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Trump Administration</strong></td>
+                                    <td><strong>"Innovation-First Deregulation"</strong><br><br>
+                                    • Systematic removal of AI safety oversight mechanisms<br><br>
+                                    • Corporate self-regulation prioritized over public interest protection<br><br>
+                                    • National security framing enabling surveillance expansion<br><br>
+                                    • Democratic deliberation bypassed through executive authority</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Global South Exclusion</strong></td>
+                                    <td><strong>Systematic Voice Marginalization</strong><br><br>
+                                    • AI governance frameworks developed without meaningful Global South participation<br><br>
+                                    • Technical standards embedding Western and Chinese priorities exclusively<br><br>
+                                    • Resource requirements for AI governance participation excluding developing nations<br><br>
+                                    • Technological dependency relationships reinforced through governance structures</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Institutional Analysis</strong></td>
+                                    <td><strong>Democratic Institutions Inadequate for AI Governance</strong><br><br>
+                                    • Democratic processes operate too slowly for AI development cycles<br><br>
+                                    • Technical complexity enabling industry capture of regulatory processes<br><br>
+                                    • International coordination fracturing along geopolitical lines<br><br>
+                                    • Public oversight mechanisms systematically bypassed through technical complexity</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p><strong>Chapter Conclusion:</strong> Democratic institutions are structurally inadequate for AI governance, operating too slowly and with insufficient technical capacity to provide meaningful oversight of rapidly evolving AI capabilities.</p>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 191, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 191, 255, 0.2);">
+                    <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.1rem;">📥 Download Chapter Resources</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/synthesis/chapter6_public_institutions_supranational_bodies.md', 'Chapter6_Public_Institutions_Analysis.md')" style="display: inline-block; background: var(--accent-color); color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: background 0.3s ease;">
+                            📄 Full Chapter Analysis (MD)
+                        </a>
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/results/Claude_Chapter6&8_results.md', 'Chapter6_Research_Source.md')" style="display: inline-block; background: var(--surface-color); color: var(--accent-color); border: 2px solid var(--accent-color); padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: all 0.3s ease;">
+                            📊 Research Source (MD)
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="semester">
+                <h3>Chapter 7: Investment & Strategic Capital Layer</h3>
+                <h4>Techno-Aristocracy and Technological Feudalism</h4>
+                <p>
+                    $1B+ training costs exclude entire nations from foundational AI development while creating hereditary technological privilege networks. Capital flows implement technological sovereignty strategies rather than market optimization, establishing new forms of techno-aristocracy.
+                </p>
+                
+                <h4>Capital as Instrument of Technological Sovereignty</h4>
+                <div class="curriculum-table">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Investment Strategy</th>
+                                    <th>Technological Sovereignty Implementation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Saudi Arabia $1.5B Groq</strong></td>
+                                    <td><strong>Building Domestic Inference Infrastructure</strong><br><br>
+                                    • Specialized inference processors for technological independence from Western cloud<br><br>
+                                    • Sovereign wealth fund implementing national AI strategy<br><br>
+                                    • Reducing dependency on NVIDIA ecosystem through alternative architecture<br><br>
+                                    • Establishing regional AI capabilities for Middle East technological leadership</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>"OpenAI Alumni Effect"</strong></td>
+                                    <td><strong>Hereditary Technological Privilege Networks</strong><br><br>
+                                    • Former OpenAI employees founding new startups with preferential access to capital<br><br>
+                                    • Knowledge transfer creating competitive advantages for alumni networks<br><br>
+                                    • Venture capital concentrating around insider knowledge and relationships<br><br>
+                                    • Technological aristocracy emerging through exclusive access patterns</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Defense-Linked Capital</strong></td>
+                                    <td><strong>Dual-Use Technology Blurring</strong><br><br>
+                                    • Anduril, Palantir leveraging military contracts for civilian market expansion<br><br>
+                                    • Defense investments enabling surveillance technology normalization<br><br>
+                                    • National security framing bypassing civilian oversight mechanisms<br><br>
+                                    • Military-industrial complex expansion into AI governance structures</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Exclusion Mechanisms</strong></td>
+                                    <td><strong>$1B+ Training Costs as Barrier to Entry</strong><br><br>
+                                    • Foundational AI development requiring nation-state level resources<br><br>
+                                    • Technical expertise concentrated in specific geographic/institutional clusters<br><br>
+                                    • Capital requirements excluding democratic participation in AI development<br><br>
+                                    • Technological sovereignty determined by access to patient capital</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p><strong>Chapter Conclusion:</strong> Capital allocation in AI functions as geopolitical strategy rather than market optimization, creating permanent technological dependencies and excluding entire populations from participating in foundational AI development.</p>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 191, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 191, 255, 0.2);">
+                    <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.1rem;">📥 Download Chapter Resources</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/synthesis/chapter7_investment_strategic_capital.md', 'Chapter7_Investment_Capital_Analysis.md')" style="display: inline-block; background: var(--accent-color); color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: background 0.3s ease;">
+                            📄 Full Chapter Analysis (MD)
+                        </a>
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/results/GEMINI_Chapter_2&7_AI Compute, Capital, Policy_.md', 'Chapter7_Research_Source.md')" style="display: inline-block; background: var(--surface-color); color: var(--accent-color); border: 2px solid var(--accent-color); padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: all 0.3s ease;">
+                            📊 Research Source (MD)
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="semester">
+                <h3>Chapter 8: Academic & Civil Society Layer</h3>
+                <h4>Epistemic Enclosure and Legitimation Mechanisms</h4>
+                <p>
+                    Academic institutions function as legitimation mechanisms for technocratic AI governance while systematic capture constrains research toward industry-friendly conclusions. Civil society demands are systematically translated into technical safety metrics rather than democratic control.
+                </p>
+                
+                <h4>Academic Capture and Civil Society Co-optation</h4>
+                <div class="curriculum-table">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Institution Type</th>
+                                    <th>Capture Mechanisms & Legitimation Functions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Stanford HAI</strong></td>
+                                    <td><strong>Training 3,500+ Government Employees</strong><br><br>
+                                    • Academic legitimacy provided for technocratic governance approaches<br><br>
+                                    • Government personnel trained in industry-aligned AI frameworks<br><br>
+                                    • Research agendas shaped by corporate funding dependencies<br><br>
+                                    • "Epistemic enclosure" transforming political questions into technical problems</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tech Press</strong></td>
+                                    <td><strong>Financial Dependence on AI Companies</strong><br><br>
+                                    • Advertising revenue dependencies constraining critical coverage<br><br>
+                                    • Access journalism creating symbiotic relationships with AI companies<br><br>
+                                    • Technical complexity enabling uncritical amplification of corporate narratives<br><br>
+                                    • AI influencers functioning as sophisticated propaganda networks</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Civil Society</strong></td>
+                                    <td><strong>Demand Translation into Safety Metrics</strong><br><br>
+                                    • Democratic demands for AI control translated into technical safety requirements<br><br>
+                                    • Participation frameworks designed to legitimize rather than constrain AI power<br><br>
+                                    • Technical complexity excluding meaningful public participation<br><br>
+                                    • Co-optation through advisory roles without enforcement authority</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Research Constraints</strong></td>
+                                    <td><strong>Funding Dependencies and Methodological Bias</strong><br><br>
+                                    • Corporate funding constraining research toward industry-friendly conclusions<br><br>
+                                    • Access to datasets and computing resources controlled by AI companies<br><br>
+                                    • Career incentives aligned with corporate rather than public interest<br><br>
+                                    • Critical research marginalized through resource and platform dependencies</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p><strong>Chapter Conclusion:</strong> Academic and civil society institutions have been systematically captured to provide legitimacy for technocratic AI governance while excluding meaningful democratic participation in technological decision-making.</p>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 191, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 191, 255, 0.2);">
+                    <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.1rem;">📥 Download Chapter Resources</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/synthesis/chapter8_academic_civil_society.md', 'Chapter8_Academic_Civil_Society_Analysis.md')" style="display: inline-block; background: var(--accent-color); color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: background 0.3s ease;">
+                            📄 Full Chapter Analysis (MD)
+                        </a>
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/results/Claude_Chapter6&8_results.md', 'Chapter8_Research_Source.md')" style="display: inline-block; background: var(--surface-color); color: var(--accent-color); border: 2px solid var(--accent-color); padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: all 0.3s ease;">
+                            📊 Research Source (MD)
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="semester">
+                <h3>Chapter 9: Military & Surveillance Ecosystem</h3>
+                <h4>Algorithmic Warfare in Everyday Life</h4>
+                <p>
+                    AI militarization has become pervasive across civilian life through the systematic blurring of military-civilian boundaries. The military-industrial-surveillance complex now deploys AI capabilities that enable unprecedented population monitoring and automated violence systems.
+                </p>
+                
+                <h4>Militarization and Surveillance Infrastructure</h4>
+                <div class="curriculum-table">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Military-Surveillance Infrastructure</th>
+                                    <th>Oppression Mechanisms & Systematic Abuse</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Palantir $10B Army Contract</strong></td>
+                                    <td><strong>Military-Industrial-Surveillance Complex</strong><br><br>
+                                    • Comprehensive data integration enabling population-scale surveillance<br><br>
+                                    • Maven expansion demonstrating AI-powered targeting capabilities<br><br>
+                                    • Dual-use technologies blurring military-civilian application boundaries<br><br>
+                                    • Government dependency creating institutional capture of democratic oversight</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Clearview AI</strong></td>
+                                    <td><strong>$51.75M BIPA Settlement Despite Continued Deployment</strong><br><br>
+                                    • Facial recognition deployed across law enforcement without democratic consent<br><br>
+                                    • Privacy violations systematically monetized through surveillance capabilities<br><br>
+                                    • Targeting of marginalized communities through automated identification systems<br><br>
+                                    • Legal settlements insufficient to constrain surveillance expansion</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Export Controls</strong></td>
+                                    <td><strong>Recognition of AI Surveillance as Oppression Tools</strong><br><br>
+                                    • Hikvision/SenseTime sanctions acknowledging AI surveillance as weapons<br><br>
+                                    • Regulatory arbitrage enabling circumvention through alternative suppliers<br><br>
+                                    • Technical sophistication allowing evasion faster than enforcement<br><br>
+                                    • Cross-border networks operating outside jurisdictional control</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Gaza AI Surveillance</strong></td>
+                                    <td><strong>Algorithmic Warfare Deployment</strong><br><br>
+                                    • AI-powered targeting systems deployed in conflict zones<br><br>
+                                    • Automated population monitoring and behavioral prediction<br><br>
+                                    • Civilian surveillance infrastructure normalizing military applications<br><br>
+                                    • Democratic oversight systematically bypassed through national security framing</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p><strong>Chapter Conclusion:</strong> AI militarization represents the crystallization of AI's potential for systematic oppression, revealing how technologies designed for beneficial applications inevitably become instruments of state power and automated violence.</p>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 191, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 191, 255, 0.2);">
+                    <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.1rem;">📥 Download Chapter Resources</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/synthesis/chapter9_military_dual_use_surveillance_ecosystem.md', 'Chapter9_Military_Surveillance_Analysis.md')" style="display: inline-block; background: var(--accent-color); color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: background 0.3s ease;">
+                            📄 Full Chapter Analysis (MD)
+                        </a>
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/results/grok_Chapter9.md', 'Chapter9_Research_Source.md')" style="display: inline-block; background: var(--surface-color); color: var(--accent-color); border: 2px solid var(--accent-color); padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: all 0.3s ease;">
+                            📊 Research Source (MD)
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="semester">
+                <h3>Chapter 10: Social Surfaces & Ecosystem Interfaces</h3>
+                <h4>Algorithmic Interpellation and Consent Manufacturing</h4>
+                <p>
+                    Social interfaces operate as sophisticated consent manufacturing systems where AI interaction patterns create "technological false consciousness." Platform concentration creates spectacle while embedding corporate theories of human-AI relationships that users internalize as personal agency.
+                </p>
+                
+                <h4>Social Interface Control and Consent Manufacturing</h4>
+                <div class="curriculum-table">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Social Platform</th>
+                                    <th>Interpellation Mechanisms & Consciousness Shaping</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>ChatGPT 100M+ Users</strong></td>
+                                    <td><strong>Embedding Human-AI Interaction Theories</strong><br><br>
+                                    • Interface design choices embedding specific theories of human agency<br><br>
+                                    • Conversation flow control shaping expectations about AI capabilities<br><br>
+                                    • Response filtering appearing as AI limitation rather than corporate censorship<br><br>
+                                    • Platform interactions feeling like choice while systematically constraining options</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>HuggingFace Platform</strong></td>
+                                    <td><strong>Concentration Effects: 1% Models = 99% Downloads</strong><br><br>
+                                    • Platform consolidation creating technological spectacle of choice<br><br>
+                                    • Long tail of unused models obscuring concentrated usage patterns<br><br>
+                                    • Developer dependencies channeling innovation toward platform-compatible formats<br><br>
+                                    • Open-source facade masking centralized control over AI distribution</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>AI Influencer Networks</strong></td>
+                                    <td><strong>Sophisticated Propaganda and Narrative Amplification</strong><br><br>
+                                    • Tech influencers amplifying corporate narratives through apparent independence<br><br>
+                                    • Social proof manufactured through coordinated content strategies<br><br>
+                                    • Technical complexity enabling uncritical amplification of industry messaging<br><br>
+                                    • Parasocial relationships leveraged for AI adoption and acceptance</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Interface Psychology</strong></td>
+                                    <td><strong>Algorithmic Interpellation Creating Technological Subjects</strong><br><br>
+                                    • Users experiencing corporate-controlled AI as personal agency<br><br>
+                                    • Technical limitations framed as AI consciousness rather than platform control<br><br>
+                                    • Interaction patterns training users to accept AI mediation of human relationships<br><br>
+                                    • Social surfaces creating "technological false consciousness" about AI capabilities</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p><strong>Chapter Conclusion:</strong> Social interfaces function as sophisticated consent manufacturing systems that create technological subjects who experience corporate-controlled AI as personal agency while systematically constraining genuine choice.</p>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 191, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 191, 255, 0.2);">
+                    <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.1rem;">📥 Download Chapter Resources</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/synthesis/chapter10_social_surfaces_ecosystem_interfaces.md', 'Chapter10_Social_Interfaces_Analysis.md')" style="display: inline-block; background: var(--accent-color); color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: background 0.3s ease;">
+                            📄 Full Chapter Analysis (MD)
+                        </a>
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/results/perplexity_chapter5&10.md', 'Chapter10_Research_Source.md')" style="display: inline-block; background: var(--surface-color); color: var(--accent-color); border: 2px solid var(--accent-color); padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: all 0.3s ease;">
+                            📊 Research Source (MD)
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="semester">
+                <h3>Chapter 11: Shadow Ecosystem & Black Box Dependencies</h3>
+                <h4>Technological Resistance Economies</h4>
+                <p>
+                    Shadow ecosystems demonstrate alternative technological trajectories through sophisticated resistance economies. Jailbreak-as-a-Service platforms, synthetic feedback farms, and BitTorrent distribution networks create parallel infrastructure that circumvents official AI governance mechanisms.
+                </p>
+                
+                <h4>Alternative Distribution and Resistance Technologies</h4>
+                <div class="curriculum-table">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Shadow Infrastructure</th>
+                                    <th>Resistance Mechanisms & Alternative Trajectories</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Jailbreak-as-a-Service</strong></td>
+                                    <td><strong>API-Based Circumvention Systems</strong><br><br>
+                                    • Systematic circumvention of AI safety measures through prompt injection<br><br>
+                                    • Commercial services offering $200+ enterprise AI safety bypasses<br><br>
+                                    • Technical sophistication exceeding official platform safety implementations<br><br>
+                                    • Demonstrating fundamental inadequacy of current AI governance approaches</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Synthetic Feedback Farms</strong></td>
+                                    <td><strong>Artificial Human Preference Manufacturing</strong><br><br>
+                                    • Synthetic human preferences available at $0.01/sample scale<br><br>
+                                    • RLHF systems compromised through artificial training data<br><br>
+                                    • Democratic consent simulation enabling manipulation of AI alignment processes<br><br>
+                                    • Market-based circumvention of human feedback requirements</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>BitTorrent Model Distribution</strong></td>
+                                    <td><strong>Decentralized Distribution with Safety Layers Removed</strong><br><br>
+                                    • Model weights distributed outside platform control systems<br><br>
+                                    • Safety fine-tuning systematically removed from distributed models<br><br>
+                                    • Geographic distribution enabling regulatory arbitrage<br><br>
+                                    • Peer-to-peer networks resistant to centralized shutdown</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Alternative Trajectory</strong></td>
+                                    <td><strong>Technological Commons as Resistance to Control</strong><br><br>
+                                    • Shadow ecosystems demonstrating viability of democratic AI development<br><br>
+                                    • Alternative organizational forms emerging outside corporate control<br><br>
+                                    • Technological resistance creating space for genuine AI democratization<br><br>
+                                    • Distributed innovation challenging centralized governance assumptions</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p><strong>Chapter Conclusion:</strong> Shadow ecosystems reveal the possibility of alternative technological trajectories based on distributed collaboration rather than centralized control, suggesting paths toward genuine AI democratization outside existing institutional frameworks.</p>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0, 191, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 191, 255, 0.2);">
+                    <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.1rem;">📥 Download Chapter Resources</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/synthesis/chapter11_shadow_ecosystem_black_box_dependencies.md', 'Chapter11_Shadow_Ecosystem_Analysis.md')" style="display: inline-block; background: var(--accent-color); color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: background 0.3s ease;">
+                            📄 Full Chapter Analysis (MD)
+                        </a>
+                        <a href="#" onclick="downloadFile(this, 'backend/content/research/results/deepseek_chapter1&11.md', 'Chapter11_Research_Source.md')" style="display: inline-block; background: var(--surface-color); color: var(--accent-color); border: 2px solid var(--accent-color); padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: all 0.3s ease;">
+                            📊 Research Source (MD)
+                        </a>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin: 40px 0; padding: 30px; background: linear-gradient(135deg, rgba(0, 191, 255, 0.1), rgba(0, 191, 255, 0.05)); border-radius: 15px; border: 2px solid rgba(0, 191, 255, 0.3);">
+                    <p style="font-size: 2.2rem; font-weight: 800; color: #00BFFF; text-shadow: 0 0 10px rgba(0, 191, 255, 0.5); margin: 0;">The Three Incompatible AI Worlds</p>
+                    <p style="font-size: 1.4rem; font-weight: 600; color: #ffffff; margin: 15px 0 0 0; text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);">AI is developing as a tool for control and power concentration, not as a democratizing technology. All three governance approaches fail to address the distributed, reproducible nature of AI systems.</p>
+                </div>
+            </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- =================== CONCLUSION SECTION ========================= -->
+        <!-- ================================================================= -->
+        <section id="conclusion">
+            <div class="container">
+                <h2>Conclusion: The System, Named and Unnamed</h2>
+                <div class="section-content">
+                    <p>This Atlas has revealed that AI is not a neutral technological stack but a contested system of power—one defined by institutional choices, capital flows, and infrastructural asymmetries that consolidate control rather than democratize capabilities.</p>
+                </div>
+                
+                <div class="curriculum">
+                    <div class="semester">
+                        <h3>Final Synthesis: The System, Named and Unnamed</h3>
+                        <h4>AI as Regime of Coordination, Not Technical Stack</h4>
+                        <p>
+                            The AI ecosystem presents itself as technical layers, but functions as a distributed regime of coordination that concentrates power through institutional choices, capital flows, and infrastructural asymmetries. This system operates through what is absent as much as what exists—regulatory leverage, public capacity, and infrastructural alternatives.
+                        </p>
+                        
+                        <h4>Structural Analysis of AI Power Dynamics</h4>
+                        <div class="curriculum-table">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>System Dimension</th>
+                                            <th>Analysis & Implications for Democratic Governance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Systemic Coordination</strong></td>
+                                            <td><strong>AI as Regime, Not Object of Regulation</strong><br><br>
+                                            • Core developers operate within closed ecosystems building on centralized infrastructures<br><br>
+                                            • Application layers multiply without standardization or systemic accountability<br><br>
+                                            • Public institutions intervene from positions of structural weakness and vendor dependency<br><br>
+                                            • Capital accumulates influence through orchestration of incentives and risk packaging</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Power-Attuned Governance</strong></td>
+                                            <td><strong>Beyond Ethics Guidelines and Technical Benchmarks</strong><br><br>
+                                            • Governance must focus on material decisions about what is built, hidden, and allowed to fail<br><br>
+                                            • Requires scrutinizing contracts, tracing dependencies, and naming unseen labor<br><br>
+                                            • Must ask for whom AI is safe, and at whose expense, not just whether it is safe<br><br>
+                                            • Demands rejecting fiction that AI is computational phenomenon detached from coercion</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Institutional Design</strong></td>
+                                            <td><strong>Political Trade-offs in Contested Technological Field</strong><br><br>
+                                            • Each layer involves ongoing political choices between scale and accountability<br><br>
+                                            • Trade-offs between access and sovereignty, innovation and opacity are not technical<br><br>
+                                            • AI treated as field of contested institutional design, not technological breakthrough<br><br>
+                                            • Layer-by-layer analysis reveals structure of power concentration, not neutral progress</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Systemic Analysis</strong></td>
+                                            <td><strong>Situated Knowledge Combined with Structural Understanding</strong><br><br>
+                                            • Requires seeing interfaces as infrastructures, datasets as labor histories<br><br>
+                                            • Models must be understood as policy artifacts, alignment as negotiation over control<br><br>
+                                            • Action within system requires better questions, not just better tools<br><br>
+                                            • Orientation must combine situated knowledge with systemic analysis</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Democratic Memory</strong></td>
+                                            <td><strong>Confronting Systems Built to Forget</strong><br><br>
+                                            • Systems obfuscating origin, labor, and harm must be met with traceability demands<br><br>
+                                            • Democratic futures require public comprehension and control of AI systems<br><br>
+                                            • Knowledge practices must insist on accountability and public narration<br><br>
+                                            • AI systems cannot remain tools of private experimentation or strategic influence</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Struggle Over Power</strong></td>
+                                            <td><strong>Frame for Understanding, Not Roadmap for Action</strong><br><br>
+                                            • This analysis offers frame for understanding power dynamics, not technical checklist<br><br>
+                                            • The ecosystem is already here—question is who gets to shape it<br><br>
+                                            • Cannot continue pretending AI development is anything less than struggle over power<br><br>
+                                            • Recognition of power dynamics is prerequisite for democratic technological futures</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <p><strong>Conclusion:</strong> This Atlas provides a frame for understanding AI as a contested system of power concentration. The ecosystem is already here—the question is who gets to shape it, and how long we will continue to pretend it is anything less than a struggle over power.</p>
+                        
+                        <div style="margin-top: 30px; padding: 20px; background: rgba(0, 191, 255, 0.05); border-radius: 8px; border: 1px solid rgba(0, 191, 255, 0.2);">
+                            <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.1rem;">📥 Download Conclusion Resources</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                                <a href="#" onclick="downloadFile(this, 'backend/content/research/synthesis/conclusion_TheSystem_Named_and_Unnamed.md', 'Conclusion_TheSystem_Named_and_Unnamed.md')" style="display: inline-block; background: var(--accent-color); color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; transition: background 0.3s ease;">
+                                    📄 Full Conclusion (MD)
+                                </a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr style="border: none; height: 2px; background: linear-gradient(90deg, transparent, var(--accent-color), transparent); margin: 50px 0;">
+
+        <section id="results">
+            <div class="container">
+                <h2>Key Insights & Strategic Implications</h2>
+                <div class="section-content">
+                    <p>
+                        This Atlas reveals that AI development is not following a neutral technological trajectory but is actively reshaping global power relations through three incompatible paradigms. Understanding these dynamics is crucial for policymakers, technologists, and citizens navigating the future of AI governance.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 40px;">
+                        <div style="background: rgba(0, 191, 255, 0.1); padding: 25px; border-radius: 12px; border-left: 4px solid var(--accent-color);">
+                            <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.2rem;">🎯 For Policymakers</h4>
+                            <p style="color: var(--secondary-text-color); font-size: 1rem;">Current regulatory frameworks are structurally inadequate for AI governance. Democratic institutions cannot govern technologies that evolve faster than democratic processes.</p>
+                        </div>
+                        <div style="background: rgba(0, 191, 255, 0.1); padding: 25px; border-radius: 12px; border-left: 4px solid var(--accent-color);">
+                            <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.2rem;">💻 For Technologists</h4>
+                            <p style="color: var(--secondary-text-color); font-size: 1rem;">Technical safety measures fail because they address symptoms, not structural causes. AI systems resist centralized control through their inherent characteristics.</p>
+                        </div>
+                        <div style="background: rgba(0, 191, 255, 0.1); padding: 25px; border-radius: 12px; border-left: 4px solid var(--accent-color);">
+                            <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.2rem;">🏢 For Business Leaders</h4>
+                            <p style="color: var(--secondary-text-color); font-size: 1rem;">AI competitive advantage increasingly depends on geopolitical positioning. Vendor dependencies create strategic vulnerabilities that may be irreversible.</p>
+                        </div>
+                        <div style="background: rgba(0, 191, 255, 0.1); padding: 25px; border-radius: 12px; border-left: 4px solid var(--accent-color);">
+                            <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.2rem;">🌍 For Citizens</h4>
+                            <p style="color: var(--secondary-text-color); font-size: 1rem;">AI development affects fundamental social relations, not just technological capabilities. Democratic control over AI requires active engagement with alternative development paradigms.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="qa">
+            <div class="container">
+                <h2>Essential Questions & Findings</h2>
+                <div class="section-content">
+                    <p>Key questions that emerge from the Atlas analysis, addressing fundamental challenges in AI governance and development.</p>
+                </div>
+                
+                <div class="curriculum">
+                    <div class="semester">
+                        <h3>Fundamental Questions About AI Control</h3>
+                        <h4>Who Controls AI Development and How?</h4>
+                        
+                        <div class="curriculum-table">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Critical Question</th>
+                                            <th>Research Finding & Strategic Implications</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Is AI developing as a democratizing technology or tool of control?</strong></td>
+                                            <td>Research definitively shows AI developing as tool of control and power concentration. Three paradigms have emerged—Western technocratic capitalism, Chinese techno-authoritarianism, and shadow commons—but none successfully democratize AI capabilities. Each concentrates power through different mechanisms: corporate control, state control, or technical gatekeeping.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Why do AI safety measures consistently fail in practice?</strong></td>
+                                            <td>Safety measures fail because they're designed for deterministic systems applied to non-deterministic AI. Middleware abstractions cannot constrain unpredictable behavior, evaluation frameworks measure lagging indicators, and human-in-the-loop systems succeed despite, not because of, safety layers.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>How does AI capital allocation function as geopolitical strategy?</strong></td>
+                                            <td>Capital flows implement technological sovereignty rather than market optimization. Saudi Arabia's $1.5B to Groq builds domestic inference infrastructure, while "OpenAI alumni effect" creates hereditary technological privilege networks. Defense-linked capital blurs commercial/military boundaries.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Are current AI governance frameworks effective?</strong></td>
+                                            <td>No. Systematic governance failure across all levels: democratic institutions operate too slowly for AI development cycles, corporate self-regulation prioritizes profit over safety, international coordination fractures along geopolitical lines, and technical solutions fail to address non-deterministic AI behavior.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="semester">
+                        <h3>Technical Architecture & Shadow Networks</h3>
+                        <h4>Understanding Alternative AI Trajectories</h4>
+                        
+                        <div class="curriculum-table">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Technical Question</th>
+                                            <th>Analysis & Alternative Possibilities</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>What makes NVIDIA's dominance so significant?</strong></td>
+                                            <td>NVIDIA has created "computational feudalism"—proprietary ecosystem where NVLink interconnects create technical lock-in, CUDA software functions as de facto industrial policy, and supply chain dependencies create single points of failure. $1B+ training costs exclude entire nations from foundational AI.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>How do shadow markets actually operate?</strong></td>
+                                            <td>Shadow ecosystems create sophisticated technological resistance economies: Jailbreak-as-a-Service ($200/enterprise breach), synthetic feedback farms ($0.01/sample), BitTorrent distribution with safety layers removed, and non-compliant datasets in black markets across Eastern Europe and Southeast Asia.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Do open-source alternatives provide genuine democratization?</strong></td>
+                                            <td>Open-source efforts face systematic constraints limiting democratization: resource requirements still exclude most actors, platform dependencies recreate centralization, technical complexity maintains expert gatekeeping, while shadow ecosystems provide more accessible alternatives than official open-source.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Is the current trajectory toward AI authoritarianism reversible?</strong></td>
+                                            <td>Reversal requires recognizing that technical solutions alone cannot address political problems, institutional reform within existing structures may be inadequate, alternative organizational forms are emerging in shadow ecosystems, and democratic AI governance may require abandoning rather than reforming current institutions.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- =========== VISUAL SNIPPET: COMPARATIVE RADAR CHART ============= -->
+        <!-- ================================================================= -->
+        <section id="radar-chart-section">
+            <div class="container">
+                <h2>Paradigm Comparison: Radar Chart</h2>
+                <div class="section-content">
+                    <p>Compare the three incompatible AI paradigms across key dimensions like centralization, democratic participation, and resistance capacity. See how each trajectory performs in shaping the future of AI.</p>
+                </div>
+                <div style="background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; display: flex; justify-content: center; align-items: center;">
+                    <canvas id="radarChart" style="max-width: 700px; max-height: 700px;"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- ======== VISUAL SNIPPET: INTERACTIVE POWER FLOW NETWORK ========= -->
+        <!-- ================================================================= -->
+        <section id="network-graph-section">
+            <div class="container">
+                <h2>Interactive Power Flow Network</h2>
+                <div class="section-content">
+                    <p>Explore the web of influence, capital, and control that defines the AI ecosystem. Drag the nodes to rearrange the graph. Hover over any node or link to highlight its connections and reveal its role in the geopolitical landscape.</p>
+                </div>
+                <div id="network-graph-container" style="background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: 12px; position: relative; width: 100%; height: 700px; overflow: hidden;">
+                    <!-- The network graph will be rendered here by D3.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- ============= DATA TABLES: RESEARCH FINDINGS ==================== -->
+        <!-- ================================================================= -->
+        <section id="research-data-tables">
+            <div class="container">
+                <h2>Research Data: Detailed Findings</h2>
+                <div class="section-content">
+                    <p>Comprehensive data from our 2024-2025 research across key areas of AI ecosystem analysis. Click on table headers to sort, or use the search functionality to explore specific entities.</p>
+                </div>
+
+                <!-- Cultural Intermediaries Table -->
+                <div class="data-table-section">
+                    <h3>AI Cultural Intermediaries & Information Brokers (2024)</h3>
+                    <p>Media outlets, influencers, and platforms that shape public understanding of AI development and governance.</p>
+                    <div class="table-controls">
+                        <input type="text" id="intermediaries-search" placeholder="Search cultural intermediaries..." style="padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--surface-color); color: var(--primary-text-color); margin-bottom: 10px; width: 300px;">
+                    </div>
+                    <div class="curriculum-table">
+                        <div class="table-container" style="max-height: 400px;">
+                            <table id="intermediaries-table">
+                                <thead>
+                                    <tr>
+                                        <th onclick="sortTable('intermediaries-table', 0)">Node/Entity</th>
+                                        <th onclick="sortTable('intermediaries-table', 1)">Type</th>
+                                        <th onclick="sortTable('intermediaries-table', 2)">Audience Metrics</th>
+                                        <th onclick="sortTable('intermediaries-table', 3)">Funding Ties</th>
+                                        <th onclick="sortTable('intermediaries-table', 4)">AI Coverage Focus</th>
+                                        <th onclick="sortTable('intermediaries-table', 5)">Known Sponsors</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>TechCrunch</strong></td>
+                                        <td>Tech Press</td>
+                                        <td>21M monthly visitors, 2.3M Twitter followers</td>
+                                        <td>Verizon Media (Yahoo), venture capital coverage bias</td>
+                                        <td>Startup funding, product launches, enterprise adoption</td>
+                                        <td>Microsoft, Google, AWS, startup ecosystem</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>VentureBeat</strong></td>
+                                        <td>Tech Press</td>
+                                        <td>6M monthly visitors, 900K Twitter followers</td>
+                                        <td>Independent, conference revenue from AI companies</td>
+                                        <td>Enterprise AI, industry analysis, market trends</td>
+                                        <td>IBM, Salesforce, enterprise software vendors</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>The Information</strong></td>
+                                        <td>Tech Press</td>
+                                        <td>Premium subscription model, 100K+ subscribers</td>
+                                        <td>Subscription-based, minimal advertiser influence</td>
+                                        <td>Behind-the-scenes reporting, executive interviews</td>
+                                        <td>Subscriber-funded, minimal external sponsorship</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Andrej Karpathy</strong></td>
+                                        <td>Prompt Influencer</td>
+                                        <td>894K Twitter followers, ex-Tesla/OpenAI</td>
+                                        <td>Independent, former OpenAI/Tesla connections</td>
+                                        <td>Technical education, AI safety, model development</td>
+                                        <td>Speaking fees, course sales, consulting</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Jeremy Howard</strong></td>
+                                        <td>Prompt Influencer</td>
+                                        <td>200K+ Twitter followers, fast.ai founder</td>
+                                        <td>fast.ai, Kaggle background, education focus</td>
+                                        <td>Democratizing AI, practical applications, ethics</td>
+                                        <td>Course revenue, platform partnerships</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Ethan Mollick</strong></td>
+                                        <td>Academic Influencer</td>
+                                        <td>350K+ Twitter/LinkedIn followers, Wharton professor</td>
+                                        <td>University salary, book deals, consulting</td>
+                                        <td>AI in business, productivity, education applications</td>
+                                        <td>Academic institution, book publishers</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>AI Breakfast Newsletter</strong></td>
+                                        <td>Newsletter</td>
+                                        <td>50K+ subscribers, industry professionals</td>
+                                        <td>Sponsorship model, AI company partnerships</td>
+                                        <td>Daily AI news, startup updates, policy changes</td>
+                                        <td>AI startups, cloud providers, enterprise tools</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>The Batch (Andrew Ng)</strong></td>
+                                        <td>Newsletter</td>
+                                        <td>500K+ subscribers, DeepLearning.ai</td>
+                                        <td>Course platform revenue, corporate partnerships</td>
+                                        <td>AI education, research summaries, industry insights</td>
+                                        <td>DeepLearning.ai courses, corporate training</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>AI Twitter/X Community</strong></td>
+                                        <td>Social Platform</td>
+                                        <td>Millions of users, hashtag-driven conversations</td>
+                                        <td>Platform algorithm influence, promoted content</td>
+                                        <td>Real-time discussions, memes, technical debates</td>
+                                        <td>X advertising, promoted AI company content</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>GitHub Copilot/AI Repos</strong></td>
+                                        <td>Developer Platform</td>
+                                        <td>100M+ developers, AI repository growth</td>
+                                        <td>Microsoft ownership, enterprise GitHub revenue</td>
+                                        <td>Open source models, code generation, development tools</td>
+                                        <td>Microsoft, GitHub Enterprise, developer tools</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Towards Data Science</strong></td>
+                                        <td>Medium Publication</td>
+                                        <td>1M+ followers, data science community</td>
+                                        <td>Medium Partner Program, industry contributor network</td>
+                                        <td>Technical tutorials, research explanations, career advice</td>
+                                        <td>Medium membership, course affiliates, tool vendors</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Lex Fridman Podcast</strong></td>
+                                        <td>Podcast/Influencer</td>
+                                        <td>2M+ YouTube subscribers, long-form interviews</td>
+                                        <td>Spotify exclusivity, sponsorship deals</td>
+                                        <td>AI research leaders, philosophical discussions, safety</td>
+                                        <td>Athletic Greens, ExpressVPN, tech company CEOs</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ecosystem Landscape Table -->
+                <div class="data-table-section">
+                    <h3>AI Ecosystem Landscape & Key Entities (2024-25)</h3>
+                    <p>Major players across the AI technology stack, from infrastructure to user interfaces.</p>
+                    <div class="table-controls">
+                        <input type="text" id="ecosystem-search" placeholder="Search ecosystem entities..." style="padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--surface-color); color: var(--primary-text-color); margin-bottom: 10px; width: 300px;">
+                    </div>
+                    <div class="curriculum-table">
+                        <div class="table-container" style="max-height: 400px;">
+                            <table id="ecosystem-table">
+                                <thead>
+                                    <tr>
+                                        <th onclick="sortTable('ecosystem-table', 0)">Entity</th>
+                                        <th onclick="sortTable('ecosystem-table', 1)">Layer</th>
+                                        <th onclick="sortTable('ecosystem-table', 2)">Ownership</th>
+                                        <th onclick="sortTable('ecosystem-table', 3)">Key AI Service</th>
+                                        <th onclick="sortTable('ecosystem-table', 4)">2024-25 Events</th>
+                                        <th onclick="sortTable('ecosystem-table', 5)">Primary Risks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Palantir Technologies</strong></td>
+                                        <td>Data Analytics/AI Platform</td>
+                                        <td>Public Company (NYSE: PLTR)</td>
+                                        <td>Palantir AIP, Foundry, Gotham</td>
+                                        <td>$2.9B revenue 2024 (29% growth), launched AI-defined vehicle for US Army</td>
+                                        <td>Government dependency (55% revenue), classified program restrictions</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Acxiom</strong></td>
+                                        <td>Data Broker/Aggregator</td>
+                                        <td>Subsidiary of IPG (Interpublic Group)</td>
+                                        <td>Identity resolution, audience data, data management</td>
+                                        <td>Limited public disclosure due to private ownership</td>
+                                        <td>Privacy regulation compliance, data monetization restrictions</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LexisNexis Risk Solutions</strong></td>
+                                        <td>Data Broker/Analytics</td>
+                                        <td>RELX Group subsidiary</td>
+                                        <td>Risk assessment, identity verification, fraud detection</td>
+                                        <td>Expanded AI-powered risk analytics offerings</td>
+                                        <td>Data privacy regulations, algorithmic bias concerns</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Pinecone</strong></td>
+                                        <td>Vector Database</td>
+                                        <td>Private (Series B funding)</td>
+                                        <td>Serverless vector database for LLM applications</td>
+                                        <td>Continued growth in AI/LLM market adoption</td>
+                                        <td>Competition from cloud providers, scaling challenges</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Weaviate</strong></td>
+                                        <td>Vector Database</td>
+                                        <td>Private company</td>
+                                        <td>Open-source vector search engine</td>
+                                        <td>Enterprise customer expansion, hybrid cloud offerings</td>
+                                        <td>Open-source monetization challenges, enterprise competition</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Cloudflare</strong></td>
+                                        <td>CDN/Edge Computing</td>
+                                        <td>Public Company (NYSE: NET)</td>
+                                        <td>Workers AI platform, edge computing for AI inference</td>
+                                        <td>Launched AI inference at edge, expanded developer tools</td>
+                                        <td>Cloud provider competition, regulatory scrutiny</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>OpenAI ChatGPT</strong></td>
+                                        <td>Frontend Interface</td>
+                                        <td>Private (Microsoft partnership)</td>
+                                        <td>GPT-4o, ChatGPT API, custom GPTs</td>
+                                        <td>100M+ weekly users, API pricing reductions, GPT Store launch</td>
+                                        <td>Regulatory scrutiny, content moderation, competition</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Anthropic Claude</strong></td>
+                                        <td>Frontend Interface</td>
+                                        <td>Private (Google/Amazon funding)</td>
+                                        <td>Claude 3 family models, enterprise solutions</td>
+                                        <td>Claude 3 launch, enterprise adoption growth</td>
+                                        <td>OpenAI competition, funding dependency, safety concerns</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Google Gemini</strong></td>
+                                        <td>Frontend Interface</td>
+                                        <td>Alphabet Inc. (GOOGL)</td>
+                                        <td>Gemini Pro/Ultra models, Bard integration</td>
+                                        <td>Gemini model family launch, enterprise integration</td>
+                                        <td>Privacy concerns, market competition, regulatory issues</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>HuggingFace</strong></td>
+                                        <td>Open Source Community</td>
+                                        <td>Private (Series C funding)</td>
+                                        <td>Model Hub, transformers library, datasets</td>
+                                        <td>700K+ models, 10M+ downloads for top models</td>
+                                        <td>Monetization challenges, content moderation, scaling costs</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Character.ai</strong></td>
+                                        <td>Frontend Interface</td>
+                                        <td>Private company</td>
+                                        <td>AI character conversations, roleplay chatbots</td>
+                                        <td>Continued user growth, safety improvements</td>
+                                        <td>Content safety, user addiction concerns, monetization</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>X (Twitter) Grok</strong></td>
+                                        <td>Frontend Interface</td>
+                                        <td>X Corp (Elon Musk)</td>
+                                        <td>Real-time AI assistant, X platform integration</td>
+                                        <td>Grok-1.5 launch, Premium subscription integration</td>
+                                        <td>Platform dependency, content moderation, user retention</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Governance Hotspots Table -->
+                <div class="data-table-section">
+                    <h3>AI Governance Hotspots & Control Points (2024)</h3>
+                    <p>Critical decision points where governance mechanisms intersect with AI capabilities and societal impact.</p>
+                    <div class="table-controls">
+                        <input type="text" id="governance-search" placeholder="Search governance hotspots..." style="padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--surface-color); color: var(--primary-text-color); margin-bottom: 10px; width: 300px;">
+                    </div>
+                    <div class="curriculum-table">
+                        <div class="table-container" style="max-height: 400px;">
+                            <table id="governance-table">
+                                <thead>
+                                    <tr>
+                                        <th onclick="sortTable('governance-table', 0)">Hotspot</th>
+                                        <th onclick="sortTable('governance-table', 1)">Governance Decision</th>
+                                        <th onclick="sortTable('governance-table', 2)">Material Effect</th>
+                                        <th onclick="sortTable('governance-table', 3)">Safety Impact</th>
+                                        <th onclick="sortTable('governance-table', 4)">Censorship Impact</th>
+                                        <th onclick="sortTable('governance-table', 5)">Key Players</th>
+                                        <th onclick="sortTable('governance-table', 6)">Regulatory Pressure</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Vector Database Access Control</strong></td>
+                                        <td>Data retention policies and query logging in vector stores</td>
+                                        <td>Determines what training data persists in embeddings and retrieval</td>
+                                        <td>Data poisoning attacks, sensitive information leakage</td>
+                                        <td>Selective retrieval filtering, topic suppression</td>
+                                        <td>Pinecone, Weaviate, cloud providers</td>
+                                        <td>GDPR right to deletion, content moderation requirements</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>CDN Edge AI Inference</strong></td>
+                                        <td>Model deployment and content filtering at edge nodes</td>
+                                        <td>Real-time response modification before reaching users</td>
+                                        <td>Reduced harmful content, latency vs safety tradeoffs</td>
+                                        <td>Geographic content filtering, selective model availability</td>
+                                        <td>Cloudflare, Fastly, AWS CloudFront</td>
+                                        <td>Regional compliance, data sovereignty laws</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Data Broker AI Training Sets</strong></td>
+                                        <td>Personal data inclusion in commercial AI datasets</td>
+                                        <td>Individual privacy profiles embedded in model weights</td>
+                                        <td>Identity inference attacks, personal information exposure</td>
+                                        <td>Demographic bias amplification, minority representation</td>
+                                        <td>Acxiom, LexisNexis, data aggregation industry</td>
+                                        <td>AI Act compliance, state privacy laws, FTC enforcement</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Platform Algorithm Mediation</strong></td>
+                                        <td>Frontend interface design and conversation flow control</td>
+                                        <td>User experience shaping through interaction patterns</td>
+                                        <td>Addiction prevention, mental health safeguards</td>
+                                        <td>Topic steering, response tone modification</td>
+                                        <td>OpenAI, Anthropic, Google, Meta</td>
+                                        <td>Digital Services Act, child safety regulations</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Enterprise Data Sovereignty</strong></td>
+                                        <td>Corporate data processing location and access controls</td>
+                                        <td>Business intelligence and competitive advantage distribution</td>
+                                        <td>Trade secret protection, insider threat mitigation</td>
+                                        <td>Corporate narrative control, whistleblower suppression</td>
+                                        <td>Palantir, enterprise cloud providers, consulting firms</td>
+                                        <td>Export controls, national security reviews, antitrust</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="contact" class="cta">
+             <div class="container">
+                <h2>Understanding AI's Geopolitical Future</h2>
+                 <div class="section-content">
+                    <p>
+                        This Atlas provides a comprehensive framework for understanding how AI is reshaping global power dynamics through technological means. The analysis reveals that we are witnessing the emergence of three incompatible AI civilizations, each with fundamental implications for democratic governance, technological sovereignty, and human agency.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin: 40px 0;">
+                        <div style="text-align: center;">
+                            <h4 style="color: var(--accent-color); margin-bottom: 15px;">🔬 Research Methodology</h4>
+                            <p style="color: var(--secondary-text-color); font-size: 1rem;">11-layer ecosystem analysis combining technical architecture review, capital flow tracking, and governance mechanism evaluation</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <h4 style="color: var(--accent-color); margin-bottom: 15px;">📊 Data Coverage</h4>
+                            <p style="color: var(--secondary-text-color); font-size: 1rem;">$50B+ in AI contracts, regulatory filings across jurisdictions, and shadow market intelligence from 2024-2025</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <h4 style="color: var(--accent-color); margin-bottom: 15px;">🎯 Strategic Framework</h4>
+                            <p style="color: var(--secondary-text-color); font-size: 1rem;">Comprehensive analysis framework for understanding AI development as geopolitical competition materialized through code</p>
+                        </div>
+                    </div>
+                    <div style="position: relative; display: inline-block;">
+                        <button id="contact-dropdown-btn" class="cta-button" style="border: none; cursor: pointer;">Contact Researcher</button>
+                        <div id="contact-dropdown" style="display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-top: 10px; min-width: 250px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); z-index: 1000;">
+                            <p style="color: var(--primary-text-color); margin: 0 0 10px 0; font-weight: 600; text-align: center;">Contact:</p>
+                            <div style="background-color: var(--background-color); border: 1px solid var(--border-color); border-radius: 4px; padding: 10px; text-align: center;">
+                                <a href="mailto:deefunxion@gmail.com" style="color: var(--accent-color); text-decoration: none; font-family: 'Courier New', monospace;">deefunxion@gmail.com</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Atlas of Artificial Intelligence Research Project. All Rights Reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.9rem; color: var(--secondary-text-color);">
+                Comprehensive analysis of AI's geopolitical landscape and technological sovereignty implications
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        /**
+         * Downloads a file with proper filename
+         * Works on GitHub Pages and handles CORS issues for local testing
+         */
+        function downloadFile(element, url, filename) {
+            // Check if we're running locally (file:// protocol)
+            if (window.location.protocol === 'file:') {
+                // For local testing, create a simple download link
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                return;
+            }
+            
+            // For GitHub Pages (http/https), use fetch approach
+            const originalText = element.textContent;
+            element.textContent = '📥 Downloading...';
+            element.style.opacity = '0.7';
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    // Create download link
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // Clean up the object URL
+                    URL.revokeObjectURL(link.href);
+                    
+                    // Restore button state
+                    element.textContent = originalText;
+                    element.style.opacity = '1';
+                })
+                .catch(error => {
+                    console.error('Download failed:', error);
+                    
+                    // Fallback: try direct download
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // Restore button state
+                    element.textContent = originalText;
+                    element.style.opacity = '1';
+                });
+        }
+
+    // =================================================================
+    // =========== JAVASCRIPT FOR COMPARATIVE RADAR CHART =============
+    // =================================================================
+    const radarCtx = document.getElementById('radarChart').getContext('2d');
+
+    const radarData = {
+        labels: [
+            'Centralization',
+            'Democratic Participation',
+            'Governance Effectiveness',
+            'Innovation Speed',
+            'Data Control',
+            'Resistance Capacity'
+        ],
+        datasets: [
+            {
+                label: 'Western Paradigm',
+                data: [8, 3, 2, 9, 7, 4], // Scores out of 10
+                backgroundColor: 'rgba(0, 191, 255, 0.2)', // Accent color with transparency
+                borderColor: 'var(--accent-color)',
+                pointBackgroundColor: 'var(--accent-color)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'var(--accent-color)',
+                borderWidth: 2
+            },
+            {
+                label: 'Chinese Paradigm',
+                data: [9, 1, 8, 7, 9, 3], // Scores out of 10
+                backgroundColor: 'rgba(255, 99, 132, 0.2)', // A different color for contrast
+                borderColor: 'rgba(255, 99, 132, 1)',
+                pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2
+            },
+            {
+                label: 'Shadow Paradigm',
+                data: [3, 7, 5, 6, 4, 8], // Scores out of 10
+                backgroundColor: 'rgba(75, 192, 192, 0.2)', // Another color
+                borderColor: 'rgba(75, 192, 192, 1)',
+                pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2
+            }
+        ]
+    };
+
+    const radarOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            r: {
+                angleLines: {
+                    color: 'rgba(255, 255, 255, 0.2)' // Light lines for dark background
+                },
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.2)' // Light grid for dark background
+                },
+                pointLabels: {
+                    color: 'var(--primary-text-color)', // Text color for labels
+                    font: {
+                        size: 14
+                    }
+                },
+                ticks: {
+                    display: false, // Hide the numbers on the axis
+                    beginAtZero: true,
+                    max: 10,
+                    color: 'var(--secondary-text-color)'
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    color: 'var(--primary-text-color)', // Legend text color
+                    font: {
+                        size: 14
+                    }
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.dataset.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        label += Math.round(context.raw * 10) / 10; // Display score
+                        return label;
+                    }
+                }
+            }
+        }
+    };
+
+    new Chart(radarCtx, {
+        type: 'radar',
+        data: radarData,
+        options: radarOptions
+    });
+
+    // =================================================================
+    // =========== JAVASCRIPT FOR INTERACTIVE NETWORK GRAPH ============
+    // =================================================================
+    const networkData = {
+        nodes: [
+            // Technical Stack
+            { id: "Foundation Models", group: "tech", size: 20, description: "Core LLMs (OpenAI, Baidu, Mistral)" },
+            { id: "Infrastructure", group: "tech", size: 22, description: "Hardware & Cloud (NVIDIA, AMD, AWS)" },
+            { id: "Applications", group: "tech", size: 18, description: "Real-world use (Morgan Stanley, Oscar Health)" },
+            { id: "Data Governance", group: "tech", size: 20, description: "Data Control (Palantir, Vector DBs)" },
+
+            // Power Structures
+            { id: "Capital", group: "power", size: 28, description: "$1B+ Training Costs, Sovereign Funds" },
+            { id: "Public Institutions", group: "power", size: 25, description: "Governance & Regulation (EU AI Act)" },
+            { id: "Military & Surveillance", group: "power", size: 26, description: "Algorithmic Warfare (Palantir, Clearview)" },
+
+            // Legitimation & Resistance
+            { id: "Legitimation", group: "influence", size: 24, description: "Academic & Media Capture (Stanford HAI)" },
+            { id: "Social Surfaces", group: "influence", size: 22, description: "Consent Manufacturing (ChatGPT, Social Media)" },
+            { id: "Shadow Ecosystem", group: "resistance", size: 30, description: "Resistance Networks (Jailbreaks, BitTorrent)" }
+        ],
+        links: [
+            // Capital flows
+            { source: "Capital", target: "Foundation Models", value: 8, description: "Funds foundational research" },
+            { source: "Capital", target: "Infrastructure", value: 9, description: "Builds data centers & buys chips" },
+            { source: "Capital", target: "Legitimation", value: 6, description: "Funds university centers & media" },
+
+            // Governance & Control flows
+            { source: "Public Institutions", target: "Foundation Models", value: 5, description: "Attempts to regulate models" },
+            { source: "Public Institutions", target: "Military & Surveillance", value: 7, description: "Authorizes surveillance tech" },
+            { source: "Military & Surveillance", target: "Data Governance", value: 8, description: "Uses data for population control" },
+            { source: "Data Governance", target: "Foundation Models", value: 7, description: "Provides training data" },
+            
+            // Infrastructure dependencies
+            { source: "Infrastructure", target: "Foundation Models", value: 10, description: "Provides compute for training" },
+            { source: "Infrastructure", target: "Applications", value: 8, description: "Hosts AI applications" },
+
+            // Influence & Social flows
+            { source: "Legitimation", target: "Public Institutions", value: 7, description: "Shapes policy discourse" },
+            { source: "Foundation Models", target: "Social Surfaces", value: 9, description: "Powers user-facing AI" },
+            { source: "Social Surfaces", target: "Legitimation", value: 6, description: "Amplifies narratives" },
+            
+            // Resistance flows
+            { source: "Shadow Ecosystem", target: "Foundation Models", value: 7, description: "Jailbreaks & fine-tunes models" },
+            { source: "Shadow Ecosystem", target: "Social Surfaces", value: 5, description: "Distributes uncensored models" },
+            { source: "Public Institutions", target: "Shadow Ecosystem", value: 4, description: "Attempts to criminalize" }
+        ]
+    };
+
+    function initializeNetworkGraph() {
+        const container = document.getElementById('network-graph-container');
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        const svg = d3.select("#network-graph-container")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .style("display", "block")
+            .style("margin", "auto");
+
+        const color = d3.scaleOrdinal()
+            .domain(["tech", "power", "influence", "resistance"])
+            .range(["#00BFFF", "#FF4136", "#FFDC00", "#2ECC40"]); // Blue, Red, Yellow, Green
+
+        const simulation = d3.forceSimulation(networkData.nodes)
+            .force("link", d3.forceLink(networkData.links).id(d => d.id).distance(120))
+            .force("charge", d3.forceManyBody().strength(-400))
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+        const link = svg.append("g")
+            .selectAll("line")
+            .data(networkData.links)
+            .join("line")
+            .attr("stroke", "rgba(255, 255, 255, 0.3)")
+            .attr("stroke-width", d => Math.sqrt(d.value));
+
+        const node = svg.append("g")
+            .selectAll("circle")
+            .data(networkData.nodes)
+            .join("circle")
+            .attr("r", d => d.size)
+            .attr("fill", d => color(d.group))
+            .attr("stroke", "#121212")
+            .attr("stroke-width", 2)
+            .call(drag(simulation));
+
+        const labels = svg.append("g")
+            .selectAll("text")
+            .data(networkData.nodes)
+            .join("text")
+            .text(d => d.id)
+            .attr("x", 8)
+            .attr("y", 3)
+            .style("font-size", "14px")
+            .style("fill", "#e0e0e0")
+            .style("pointer-events", "none"); // Make text non-interactive
+
+        // Add tooltips
+        const tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("position", "absolute")
+            .style("visibility", "hidden")
+            .style("background-color", "rgba(30, 30, 30, 0.9)")
+            .style("color", "#e0e0e0")
+            .style("border", "1px solid #333")
+            .style("padding", "10px")
+            .style("border-radius", "8px")
+            .style("font-family", "inherit")
+            .style("z-index", "1000");
+
+        node.on("mouseover", function(event, d) {
+            tooltip.style("visibility", "visible").html(`<strong>${d.id}</strong><br>${d.description}`);
+            
+            // Highlight connections
+            link.style('stroke', l => (l.source.id === d.id || l.target.id === d.id) ? '#FFDC00' : 'rgba(255, 255, 255, 0.1)');
+            link.style('stroke-width', l => (l.source.id === d.id || l.target.id === d.id) ? 4 : Math.sqrt(l.value));
+            node.style('opacity', n => (isConnected(d, n)) ? 1.0 : 0.3);
+            labels.style('opacity', n => (isConnected(d, n)) ? 1.0 : 0.3);
+        })
+        .on("mousemove", function(event) {
+            tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function() {
+            tooltip.style("visibility", "hidden");
+            // Reset styles
+            link.style('stroke', 'rgba(255, 255, 255, 0.3)').style('stroke-width', d => Math.sqrt(d.value));
+            node.style('opacity', 1.0);
+            labels.style('opacity', 1.0);
+        });
+
+        function isConnected(a, b) {
+            return a.id === b.id || networkData.links.some(link => (link.source.id === a.id && link.target.id === b.id) || (link.source.id === b.id && link.target.id === a.id));
+        }
+
+        simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            node
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y);
+            
+            labels
+                .attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function drag(simulation) {
+            function dragstarted(event) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                event.subject.fx = event.subject.x;
+                event.subject.fy = event.subject.y;
+            }
+            function dragged(event) {
+                event.subject.fx = event.x;
+                event.subject.fy = event.y;
+            }
+            function dragended(event) {
+                if (!event.active) simulation.alphaTarget(0);
+                event.subject.fx = null;
+                event.subject.fy = null;
+            }
+            return d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended);
+        }
+    }
+
+    // =================================================================
+    // =========== CONTACT DROPDOWN FUNCTIONALITY ===================
+    // =================================================================
+    function initializeContactDropdown() {
+        const dropdownBtn = document.getElementById('contact-dropdown-btn');
+        const dropdown = document.getElementById('contact-dropdown');
+        
+        if (dropdownBtn && dropdown) {
+            dropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function() {
+                dropdown.style.display = 'none';
+            });
+            
+            // Prevent dropdown from closing when clicking inside it
+            dropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+    }
+
+    // Call the function to initialize table search, network graph and contact dropdown on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeTableSearch();
+        initializeNetworkGraph();
+        initializeContactDropdown();
+    });
+
+    // =================================================================
+    // =========== TABLE SEARCH AND SORT FUNCTIONALITY ================
+    // =================================================================
+
+    // Table sorting functionality
+    function sortTable(tableId, columnIndex) {
+        const table = document.getElementById(tableId);
+        const tbody = table.getElementsByTagName('tbody')[0];
+        const rows = Array.from(tbody.rows);
+        const isAscending = table.getAttribute('data-sort-asc') !== 'true';
+        
+        rows.sort((a, b) => {
+            const aVal = a.cells[columnIndex].textContent.trim().toLowerCase();
+            const bVal = b.cells[columnIndex].textContent.trim().toLowerCase();
+            
+            // Try to parse as numbers if possible
+            const aNum = parseFloat(aVal);
+            const bNum = parseFloat(bVal);
+            
+            if (!isNaN(aNum) && !isNaN(bNum)) {
+                return isAscending ? aNum - bNum : bNum - aNum;
+            }
+            
+            return isAscending ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+        });
+        
+        // Clear the tbody and append sorted rows
+        tbody.innerHTML = '';
+        rows.forEach(row => tbody.appendChild(row));
+        
+        // Update sort direction
+        table.setAttribute('data-sort-asc', isAscending);
+        
+        // Update header indicators
+        const headers = table.getElementsByTagName('th');
+        Array.from(headers).forEach((header, index) => {
+            header.style.backgroundColor = index === columnIndex 
+                ? 'rgba(0, 191, 255, 0.2)' 
+                : '';
+        });
+    }
+
+    // Table search functionality
+    function initializeTableSearch() {
+        // Intermediaries table search
+        const intermediariesSearch = document.getElementById('intermediaries-search');
+        const intermediariesTable = document.getElementById('intermediaries-table');
+        
+        intermediariesSearch.addEventListener('keyup', function() {
+            searchTable(this.value, intermediariesTable);
+        });
+
+        // Ecosystem table search
+        const ecosystemSearch = document.getElementById('ecosystem-search');
+        const ecosystemTable = document.getElementById('ecosystem-table');
+        
+        ecosystemSearch.addEventListener('keyup', function() {
+            searchTable(this.value, ecosystemTable);
+        });
+
+        // Governance table search
+        const governanceSearch = document.getElementById('governance-search');
+        const governanceTable = document.getElementById('governance-table');
+        
+        governanceSearch.addEventListener('keyup', function() {
+            searchTable(this.value, governanceTable);
+        });
+    }
+
+    function searchTable(searchTerm, table) {
+        const tbody = table.getElementsByTagName('tbody')[0];
+        const rows = tbody.getElementsByTagName('tr');
+        const searchLower = searchTerm.toLowerCase();
+        
+        Array.from(rows).forEach(row => {
+            const cells = row.getElementsByTagName('td');
+            let found = false;
+            
+            Array.from(cells).forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(searchLower)) {
+                    found = true;
+                }
+            });
+            
+            row.style.display = found ? '' : 'none';
+        });
+        
+        // Show "no results" message if needed
+        const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
+        if (visibleRows.length === 0 && searchTerm.length > 0) {
+            // Could add a "no results" row here if desired
+        }
+    }
+    </script>
+
+</body>
+</html>
